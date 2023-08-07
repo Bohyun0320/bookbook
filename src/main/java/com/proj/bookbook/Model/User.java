@@ -1,18 +1,20 @@
 package com.proj.bookbook.Model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
 @Builder
-@Getter @Setter
-@ToString
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User{
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
@@ -22,25 +24,23 @@ public class User{
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name="password")
+    @Column(name="password", nullable = false)
     private String password;
 
-    @Column(name="name")
+
+    @Column(name="passwordCheck", nullable = false)
+    private String passwordCheck;
+
+
+    @Column(name="name" , nullable = false)
     private String name;
 
-    @Column(name="birth_y")
-    private Long birth_y;
-
-    @Column(name="birth_m")
-    private Long birth_m;
-
-    @Column(name="birth_d")
-    private Long birth_d;
+    @Column(name="birth")
+    private String birth;
 
     @CreatedDate
     private LocalDateTime register_date;
 
-//    @JoinColumn(n)
 
 
 

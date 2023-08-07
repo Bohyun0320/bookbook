@@ -14,7 +14,7 @@ public class Role {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     @Column(name="role_id")
-    @OneToMany(fetch = FetchType.EAGER, mappedBy="user", cascade = CascadeType.ALL)
+//    @OneToMany(fetch = FetchType.EAGER, mappedBy="user", cascade = CascadeType.ALL)
     private Long role_id;
 
 //    @Column(name="role_name")

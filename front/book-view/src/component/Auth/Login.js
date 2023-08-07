@@ -1,18 +1,20 @@
-import React from 'react';
-import SignUp from './SignUp';
+import React,{useState} from 'react';
+import styles from './SignUp.module.css';
+import Header from '../Layout/Header';
+
+const Login = () =>{
+       const [email,setEmail] = useState("");
+       const [pw, setPw] = useState("");
 
 
-const Login = (props) =>{
+
   return (
     <div className="App">
-    이름  {props.name} <br />
-    이메일  {props.email} <br />
-    비밀번호 {props.pw}<br />
-    비밀번호 확인 {props.chkpw}<br />
-    생년월일 {props.birth}<br />
+      <div className={styles.email}>
+        <input className ={styles.text} id = "email" value={email} placeholder='이메일'></input>
+        <input className ={styles.text} id = "pw" value={pw} placeholder='비밀번호'></input>
 
-
-
+      </div>
 
     </div>
   );

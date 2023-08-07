@@ -1,20 +1,19 @@
 import React,{useState,useEffect} from 'react';
 import styles from './SignUp.module.css';
 import Login from './Login';
-const User = {
-  name : '관리자',
-  email: 'admin@admin.com',
-  pw: 'admin12@',
-  chkpw : 'amdin12@',
-  birth : '2023-07-25'
-}
-
+import {  useNavigate, Link } from "react-router-dom";
+import axios from 'axios';
+import Axios from '../API/Axios';
 const SignUp = () => {
+
+
+const navigate = useNavigate();
+
     const [name,setName]= useState("");
     const [email,setEmail] = useState("");
     const [pw, setPw] = useState("");
     const [chkpw,setChkpw] =useState("");
-    const [birth ,setBirth] = useState("");
+    const [birth ,setBirth] = useState("" );
 
     //오류메세지 전달
    const [nameMessage, setNameMessage] = React.useState("");
@@ -31,22 +30,33 @@ const SignUp = () => {
     const [ispw, setIsPw] = React.useState(false);
     const [ischkpw, setIsChkPw] = React.useState(false);
     const [isbirth, setIsBirth] = React.useState(false);
-    const [notAllow, setNotAllow] = useState(true);
 
 
-    useEffect(() => {
-        if(isemail && ispw ){
-            setNotAllow(false);
-            return;
-        }
-        setNotAllow(true);
-    }, [isemail, ispw]);
+    useEffect(()=>{
+        getUser();
+    },[]);
 
+    async function getUser(){
+        await axios
+            .post('http://localhost:8080/api/join')
+            .then((response) => {
+                console.log(response.data);
+                setName(response.data.name);
+                setEmail(response.data.email);
+                setPw(response.data.pw);
+                setChkpw(response.data.chkpw);
+                setBirth(response.data.birth);
 
+            })
+            .catch((error)=>{
+                console.log(error);
+            })
+    }
 
 
     const onChangeName = (e) =>{
-        const currentName = e.target.value
+    e.preventDefault();
+        const currentName = e.currentTarget.value;
         setName(currentName);
         const name_regex = /^[가-힣]+.{2,15}$/;
         if(!name_regex.test(currentName)){
@@ -62,7 +72,8 @@ const SignUp = () => {
     }
 
      const onChangeEmail = (e) => {
-       const currentEmail = e.target.value;
+     e.preventDefault();
+       const currentEmail = e.currentTarget.value;
        setEmail(currentEmail);
        const email_regex = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/;
        if(!email_regex.test(currentEmail)){
@@ -76,7 +87,8 @@ const SignUp = () => {
 
 
     const onChangePw = (e) =>{
-       const currentPw = e.target.value;
+    e.preventDefault();
+       const currentPw = e.currentTarget.value;
        setPw(currentPw);
        const passwordRegExp = /^(?=.*[a-z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,12}$/;
        if(!passwordRegExp.test(e.target.value)){
@@ -89,7 +101,8 @@ const SignUp = () => {
     }
 
     const onChangeChkPw = (e) => {
-            const currentChkPw = e.target.value;
+    e.preventDefault();
+            const currentChkPw = e.currentTarget.value;
             setChkpw(currentChkPw);
             if (pw !== currentChkPw) {
                setChkPwMessage("비밀번호가 똑같지 않아요!");
@@ -102,7 +115,8 @@ const SignUp = () => {
 
 
     const onChangeBirth = (e) =>{
-        const currentBirth = e.target.value;
+    e.preventDefault();
+        const currentBirth = e.currentTarget.value;
         setBirth(currentBirth);
 
         if ((setBirth.value)=="" ){
@@ -113,24 +127,31 @@ const SignUp = () => {
 
         }
     }
-    const onClickConfirmButton = () => {
-      if( email === User.email && pw === User.pw ) {
-        alert('로그인에 성공했습니다.')
-      } else {
-        alert("등록되지 않은 회원입니다.");
+
+    const handleSubmit = (e) =>{
+    e.preventDefault();
+      axios.post('http://localhost:8080/api/join',
+      {
+      headers: { "Content-Type": "application/json", "Access-Control-Allow-Credentials" : true },
+
+                               name : name,
+                               email : email,
+                               pw : pw,
+                               chkpw : chkpw,
+                               birth : birth,
+
+                           }
+                            )
+                           .then((response) => {
+                               console.log(response);
+                               alert("회원가입성공");
+
+                           })
+                           .catch((error) => {
+                               console.log("error : ", error.response);
+                           })
+
       }
-    }
-
-
-// input 엔터시 초기화 방지
-document.addEventListener('keydown', function(event) {
-  if (event.keyCode === 13) {
-    event.preventDefault();
-  };
-}, true);
-
-
-
 
 
 
@@ -139,31 +160,32 @@ document.addEventListener('keydown', function(event) {
     <div className="App">
             <div className={styles.container}>
                 <div className={styles.title}>SignUp</div>
-                <form className={styles.inputContainer} onkeydown="return captureReturnKey(event)" >
+                <form className ={styles.form_Container} onSubmit = {handleSubmit}  >
                   <div>
-                    <input className ={styles.text} id = "name" defaultValue={name} placeholder='이름' onChange={onChangeName} ></input>
+                    <input className ={styles.text} id = "name" value={name} placeholder='이름' onChange={onChangeName} ></input>
                     <p className={styles.message}>{nameMessage}</p>
 
                     <div className={styles.email}>
-                      <input className ={styles.text} id = "email" defaultValue={email} placeholder='이메일'onChange={onChangeEmail}></input>
+                      <input className ={styles.text} id = "email" value={email} placeholder='이메일'onChange={onChangeEmail}></input>
                       <p className={styles.message}>{emailMessage}</p>
                       <button>중복</button>
                     </div>
-                      <input className ={styles.text} id = "pw" defaultValue={pw} placeholder='비밀번호' onChange={onChangePw}></input>
+                      <input className ={styles.text} type = "password" id = "pw" value={pw} placeholder='비밀번호' onChange={onChangePw}></input>
+
                       <p className={styles.message}>{pwMessage}</p>
 
-                      <input className ={styles.text} id = "chkpw" defaultValue={chkpw} placeholder='비밀번호 확인'onChange = {onChangeChkPw}></input>
+                      <input className ={styles.text} type = "password" id = "chkpw" value={chkpw} placeholder='비밀번호 확인'onChange = {onChangeChkPw}></input>
                       <p className={styles.message}>{chkpwMessage}</p>
 
-                      <input className={styles.birthdate} id = "birth"  defaultValue={birth}type="date" onChange ={onChangeBirth}></input>
+                      <input className={styles.birthdate} id = "birth"  value={birth}type="date" onChange ={onChangeBirth}></input>
                       <p className={styles.message}>{birthMessage}</p>
                   </div>
 
-                  <button onClick={onClickConfirmButton} disabled={notAllow}>가입하기</button>
+                  <button type="submit" ></button>
                 </form>
                  <div >
                     이미 회원이신가요?&nbsp;&nbsp;
-                    <Login name={name} email = {email} pw = {pw} chkpw={pw} birth = {birth}/>
+                    <Link to = '/login' > 로그인하러가기 </Link>
 
                  </div>
             </div>
