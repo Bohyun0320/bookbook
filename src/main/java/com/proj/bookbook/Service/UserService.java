@@ -1,11 +1,14 @@
 package com.proj.bookbook.Service;
 
+import com.proj.bookbook.DTO.RoleDTO;
 import com.proj.bookbook.DTO.UserDTO;
+import com.proj.bookbook.Model.Role;
 import com.proj.bookbook.Model.User;
 import com.proj.bookbook.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -25,12 +28,11 @@ public class UserService {
                 .passwordCheck(userDTO.getPassword())
                 .name(userDTO.getName())
                 .birth((userDTO.getBirth()))
-                .register_date(LocalDateTime.now()).build();
+                .build();
 
         // 이미 등록이 되어있는지 확인.
-        if(userRepository.findUserByEmail(user.getEmail()) != null) {
-            throw new RuntimeException("등록된 이메일입니다.");
-        }
+        System.out.println(userDTO.getPassword()+", "+userDTO.getPasswordCheck());
+
 
         userRepository.save(user);
     }

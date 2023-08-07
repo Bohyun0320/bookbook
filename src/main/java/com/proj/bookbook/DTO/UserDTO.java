@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -27,13 +28,18 @@ public class UserDTO {
     private String birth;
     private LocalDateTime register_date;
 
+    private Long role_id;
+
     UserDTO(User user){
-        this.userIndex = user.getUser_id();
         this.email = user.getEmail();
         this.password = user.getPassword();
         this.passwordCheck = user.getPasswordCheck();
         this.name = user.getName();
         this.birth = user.getBirth();
         this.register_date = user.getRegister_date();
+        this.role_id =user.getRole().getRole_id();
+
     }
+
+
 }

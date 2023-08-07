@@ -3,6 +3,10 @@ package com.proj.bookbook.Model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 @Entity
 @Builder
 @Getter
@@ -14,10 +18,13 @@ public class Role {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     @Column(name="role_id")
-//    @OneToMany(fetch = FetchType.EAGER, mappedBy="user", cascade = CascadeType.ALL)
     private Long role_id;
 
-//    @Column(name="role_name")
-//    private String role_name;
+    @Column(name="role_name")
+    private String role_name;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "role", cascade = CascadeType.ALL)
+    private List<User> userList = new ArrayList<>();
+
 
 }

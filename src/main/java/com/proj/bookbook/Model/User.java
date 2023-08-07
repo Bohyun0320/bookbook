@@ -14,25 +14,25 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements Serializable {
+public class User  {
 
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     @Column(name="user_id")
     private Long user_id;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "email" , nullable = false, unique = true)
     private String email;
 
-    @Column(name="password", nullable = false)
+    @Column(name="password")
     private String password;
 
 
-    @Column(name="passwordCheck", nullable = false)
+    @Column(name="passwordCheck")
     private String passwordCheck;
 
 
-    @Column(name="name" , nullable = false)
+    @Column(name="name" )
     private String name;
 
     @Column(name="birth")
@@ -40,6 +40,10 @@ public class User implements Serializable {
 
     @CreatedDate
     private LocalDateTime register_date;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id")
+    private Role role;
 
 
 
