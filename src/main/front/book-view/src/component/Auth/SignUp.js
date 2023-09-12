@@ -3,7 +3,6 @@ import styles from './SignUp.module.css';
 import Login from './Login';
 import {  useNavigate, Link } from "react-router-dom";
 import axios from 'axios';
-import Axios from '../API/Axios';
 const SignUp = () => {
 
 
@@ -13,7 +12,11 @@ const navigate = useNavigate();
     const [email,setEmail] = useState("");
     const [pw, setPw] = useState("");
     const [chkpw,setChkpw] =useState("");
-    const [birth ,setBirth] = useState("" );
+    const [birthY, setBirthY] = useState('');
+    const [birthM, setBirthM] = useState('');
+    const [birthD, setBirthD] = useState('');
+    const [registerDate ,setRegisterDate] = useState("");
+
 
     //오류메세지 전달
    const [nameMessage, setNameMessage] = React.useState("");
@@ -31,27 +34,6 @@ const navigate = useNavigate();
     const [ischkpw, setIsChkPw] = React.useState(false);
     const [isbirth, setIsBirth] = React.useState(false);
 
-
-    useEffect(()=>{
-        getUser();
-    },[]);
-
-    async function getUser(){
-        await axios
-            .post('http://localhost:8080/api/join')
-            .then((response) => {
-                console.log(response.data);
-                setName(response.data.name);
-                setEmail(response.data.email);
-                setPw(response.data.pw);
-                setChkpw(response.data.chkpw);
-                setBirth(response.data.birth);
-
-            })
-            .catch((error)=>{
-                console.log(error);
-            })
-    }
 
 
     const onChangeName = (e) =>{
@@ -113,38 +95,66 @@ const navigate = useNavigate();
              }
      }
 
-
-    const onChangeBirth = (e) =>{
-    e.preventDefault();
-        const currentBirth = e.currentTarget.value;
-        setBirth(currentBirth);
-
-        if ((setBirth.value)=="" ){
-            setBirthMessage('생년월일을 클릭해주세요!')
-            setIsChkPw(false);
-        }else{
-            setIsChkPw(true);
-
-        }
+    const YEAR = [];
+    const nowYear = new Date().getFullYear();
+    for(let i = 1960; i<= nowYear; i++){
+        YEAR.push(i);
     }
+
+    const MONTH = [];
+    for(let i = 1; i<=12; i++){
+        MONTH.push(i);
+    }
+
+    const DAY = [];
+    for(let i = 1; i<=31; i++){
+        let d = String(i).padStart(2,'0');
+        DAY.push(d);
+    }
+
+    const handleName = (e)=>{
+        setName(e.target.value);
+    }
+
+    const handleBirthY = (e)=>{
+        setBirthY(e.target.value);
+    }
+
+    const handleBirthM = (e)=>{
+        setBirthM(e.target.value);
+    }
+
+    const handleBirthD = (e)=>{
+        setBirthD(e.target.value);
+    }
+
+
 
     const handleSubmit = (e) =>{
     e.preventDefault();
-      axios.post('http://localhost:8080/api/join',
+      axios.post('http://localhost:8080/auth/join',
       {
-      headers: { "Content-Type": "application/json", "Access-Control-Allow-Credentials" : true },
+      headers: { "Access-Control-Allow-Credentials" : true },
+
 
                                name : name,
                                email : email,
                                password : pw,
                                passwordCheck : chkpw,
-                               birth : birth,
+                               birthY:birthY,
+                               birthM:birthM,
+                               birthD : birthD,
+                               register_date : registerDate
 
                            }
                             )
                            .then((response) => {
                                console.log(response);
                                alert("회원가입성공");
+                               if ((response.status = 200)){
+                                    return navigate('/loginForm')
+                               }
+
 
                            })
                            .catch((error) => {
@@ -161,14 +171,18 @@ const navigate = useNavigate();
             <div className={styles.container}>
                 <div className={styles.title}>SignUp</div>
                 <form className ={styles.form_Container} method = 'post' onSubmit = {handleSubmit}  >
-                  <div>
+                  <div className = {styles.input_Container}>
                     <input className ={styles.text} id = "name" value={name} placeholder='이름' onChange={onChangeName} ></input>
                     <p className={styles.message}>{nameMessage}</p>
 
                     <div className={styles.email}>
-                      <input className ={styles.text} id = "email" value={email} placeholder='이메일'onChange={onChangeEmail}></input>
-                      <p className={styles.message}>{emailMessage}</p>
-                      <button>중복</button>
+                        <div className = {styles.email_container}>
+                            <input className ={styles.email_text} id = "email" value={email} placeholder='이메일'onChange={onChangeEmail}></input>
+
+                            <button className = {styles.email_Check}>중복확인</button>
+                        </div>
+                        <p className={styles.message}>{emailMessage}</p>
+
                     </div>
                       <input className ={styles.text} type = "password" id = "pw" value={pw} placeholder='비밀번호' onChange={onChangePw}></input>
 
@@ -177,17 +191,36 @@ const navigate = useNavigate();
                       <input className ={styles.text} type = "password" id = "chkpw" value={chkpw} placeholder='비밀번호 확인'onChange = {onChangeChkPw}></input>
                       <p className={styles.message}>{chkpwMessage}</p>
 
-                      <input className={styles.birthdate} id = "birth"  value={birth}type="date" onChange ={onChangeBirth}></input>
+                     <div className = {styles.birthContainer}>
+                            <select className = {styles.birthY} id={birthY} name={birthY} onChange={handleBirthY}>
+                              {YEAR.map(y=>{
+                                  return <option value={y}>{y}</option>;
+                              })}
+                            </select>
+                            <select className = {styles.birthM} id={birthM} name={birthM} onChange={handleBirthM}>
+                               {MONTH.map(m =>{
+                                  return <option value={m}>{m}</option>
+                               })}
+                            </select>
+                            <select className = {styles.birthD} id={birthD} name={birthD} onChange={handleBirthD}>
+                               {DAY.map(d=>{
+                                   return <option value={d}>{d}</option>
+                               })}
+                            </select>
+                       </div>
                       <p className={styles.message}>{birthMessage}</p>
+
+                      <button className ={styles.join_btn} type="submit"  >가입하기</button>
+                      <div className = {styles.logContainer}>
+                        이미 회원이신가요?&nbsp;&nbsp;
+                        <Link  to = '/loginForm' className= {styles.linkLog} > 로그인하러가기</Link>
+                      </div>
+
                   </div>
 
-                  <button type="submit" >가입하기</button>
-                </form>
-                 <div >
-                    이미 회원이신가요?&nbsp;&nbsp;
-                    <Link to = '/login' > 로그인하러가기 </Link>
 
-                 </div>
+                </form>
+
             </div>
 
     </div>

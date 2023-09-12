@@ -46,6 +46,7 @@
     "react-app-polyfill": "^3.0.0",
     "react-dev-utils": "^12.0.1",
     "react-dom": "^18.2.0",
+    "react-icons": "^4.10.1",
     "react-refresh": "^0.11.0",
     "react-router-dom": "^6.14.2",
     "resolve": "^1.20.0",
@@ -62,7 +63,6 @@
     "webpack-manifest-plugin": "^4.0.2",
     "workbox-webpack-plugin": "^6.4.1"
   },
-
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
@@ -140,5 +140,5 @@
       "react-app"
     ]
   },
-  "proxy": "http://localhost:8080"
+  "proxy": "http://localhost:8080/auth"
 }

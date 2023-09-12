@@ -4,7 +4,15 @@
   background-color: #FEFAE0;
   background-attachment: fixed;
   display: flex;
-  flex-direction: row;
-  align-items: left;
-  margin-bottom: 2rem;
+  flex-direction: column;
+
 }
+.header{
+  display: flex;
+  flex-direction: row;
+}
+
+.main{
+
+background-color : white;}
+

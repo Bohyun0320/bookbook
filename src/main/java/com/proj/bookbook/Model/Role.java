@@ -23,6 +23,11 @@ public class Role {
     @Column(name="role_name")
     private String role_name;
 
+    public enum UserRole {
+        USER, ADMIN;
+
+    }
+
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "role", cascade = CascadeType.ALL)
     private List<User> userList = new ArrayList<>();
 
